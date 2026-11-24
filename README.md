@@ -18,6 +18,20 @@ This repository is a worked example from the **LSMA Analysis Lab**, the analysis
 
 ---
 
+## Biological question and aim
+
+**Question.** When normal kidney tissue becomes clear cell renal cell carcinoma, which genes change their activity, and which biological processes do those changes point to?
+
+**Hypothesis.** If the loss of *VHL* drives this cancer, tumours should show a constant "low oxygen" (hypoxia) programme, with glycolysis rising and mitochondrial energy production falling, even though the tissue has oxygen. Specialised kidney functions should be lost as the tubule cells turn into cancer cells.
+
+**Aims**
+1. Compare each patient's tumour with their own normal kidney (24 pairs, TCGA-KIRC) to find the genes that change, and by how much.
+2. Find the pathways those genes belong to, and test whether hypoxia, metabolism and immune processes stand out.
+3. Check the findings in an independent group of patients (GSE102101) and confirm they don't depend on a single unusual sample.
+4. Show each step as it is run in the LSMA Analysis Lab, so a student can repeat it.
+
+---
+
 ## Background: clear cell kidney cancer
 
 **Kidney cancer** is among the ten most common cancers in adults. **Clear cell renal cell carcinoma (ccRCC)** is its most frequent form, about three in four cases. It starts in the cells lining the kidney's tubules, the small channels that filter blood and make urine. Under the microscope its cells look clear because they are packed with fat and glycogen.
