@@ -14,6 +14,21 @@ This repository is a worked example from the **LSMA Analysis Lab**, the analysis
 
 ---
 
+## Background: clear cell kidney cancer
+
+**Kidney cancer** is among the ten most common cancers in adults. **Clear cell renal cell carcinoma (ccRCC)** is its most frequent form, about three in four cases. It starts in the cells lining the kidney's tubules, the small channels that filter blood and make urine. Under the microscope its cells look clear because they are packed with fat and glycogen.
+
+**One gene sits at the centre of the disease.** In most clear cell tumours, both copies of the **VHL** tumour suppressor gene are lost, through mutation, silencing, or loss of chromosome 3p.
+- VHL normally switches off the hypoxia-inducible factors (HIFs) when there is enough oxygen.
+- Without it, the cell behaves as if it were starved of oxygen. It builds new blood vessels (VEGF), changes its metabolism towards glycolysis, and expresses hypoxia genes such as **CA9**.
+- This "pseudo-hypoxia" is why drugs that block blood-vessel growth (anti-VEGF) and, more recently, HIF-2α inhibitors are used in this cancer.
+
+**It is also an immune-rich tumour.** Clear cell kidney cancers are often heavily infiltrated by immune cells, one reason immune checkpoint therapy is part of standard treatment.
+
+**Why compare tumour with normal tissue from the same patients?** Each person's normal kidney is the cleanest possible control. Comparing a tumour with the patient's own adjacent normal tissue removes differences between people (age, genetics, lifestyle) and leaves the changes caused by the cancer itself. That's the question this analysis asks.
+
+---
+
 ## Key findings
 
 1. **Tumour and normal kidney are very different.** The first principal component separates the two groups and explains 61% of the variation between samples (Figure 1).
