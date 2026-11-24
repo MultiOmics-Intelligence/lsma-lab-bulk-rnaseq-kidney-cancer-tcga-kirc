@@ -1,0 +1,4 @@
+gene_list	measured_in_validation	same_direction	same_direction_and_significant	binomial_p_vs_chance
+Top 100 higher in tumour	90	90	90	8.1e-28
+Top 100 lower in tumour	95	95	94	2.5e-29
+All strongly changed genes	4674	4579	4231	<1e-300
