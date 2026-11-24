@@ -15,7 +15,7 @@ This repository is a worked example from the **LSMA Analysis Lab**, the analysis
 | **Lab run time** | **5 min 31 s** for the whole analysis (plus 50 s to import the data from the GDC) |
 | **Validation** | Independent cohort GSE102101 (10 patient pairs), same lab workflow: **4 min 36 s**. Robustness re-run without one flagged sample: **5 min 1 s** |
 | **Result** | **Replicated**: 98% of the strongly changed genes, and all 34 significant pathways, move the same way in the independent cohort |
-| **Companions** | [The same cancer, cell by cell](https://github.com/MultiOmics-Intelligence/lsma-lab-single-cell-kidney-cancer-ccrcc) (single-cell RNA-seq) · [The kidney cancer methylome](https://github.com/MultiOmics-Intelligence/lsma-lab-dna-methylation-kidney-cancer-tcga-kirc) (DNA methylation, linked to these genes) |
+| **Companions** | [The same cancer, cell by cell](https://github.com/MultiOmics-Intelligence/lsma-lab-single-cell-kidney-cancer-ccrcc) (single-cell RNA-seq) · [The kidney cancer methylome](https://github.com/MultiOmics-Intelligence/lsma-lab-dna-methylation-kidney-cancer-tcga-kirc) (DNA methylation, linked to these genes) · [Active enhancers](https://github.com/MultiOmics-Intelligence/lsma-lab-chip-seq-kidney-cancer-enhancers) (ChIP-seq) |
 
 ---
 
@@ -66,6 +66,32 @@ This repository is a worked example from the **LSMA Analysis Lab**, the analysis
    - Together this is the well-known metabolic switch of clear cell kidney cancer, away from the mitochondria and towards glycolysis, and its strong immune infiltration.
 
 Each result carries the lab's evidence label. PCA and clustering are *exploratory*; the gene list is *statistically supported*; the pathway readings are *biological interpretation* and need independent confirmation.
+
+---
+
+## Quality control and PCA
+
+### Quality control
+- **Sequencing depth:** every sample is checked before analysis. Library sizes range from 23.6 to 80.4 million reads (Figure QC1), well within what is needed.
+- **Gene filter:** the expression filter keeps 20,829 of 60,660 genes (Figure QC3). The rest are too lowly expressed to test.
+- **Correlations:** samples correlate at 0.80 or more (Figure QC2).
+- **One flagged sample:** TCGA-B0-5706-01A is less correlated with the others. It was kept, and the robustness check under Validation shows it doesn't change the results.
+- **Normalisation:** DESeq2 size factors and edgeR's TMM agree almost perfectly (r = 0.997; Figure QC4), so the choice of normalisation doesn't drive the results.
+
+| | |
+|---|---|
+| ![Library sizes](figures/qc-pca-library_sizes.png) **QC1.** Library size per sample. | ![Sample correlation](figures/qc-pca-sample_correlation.png) **QC2.** Sample correlation heatmap. |
+
+### PCA
+- **The split:** on the 500 most variable genes, PC1 explains 61% of the variation and separates tumours from normals (Figure 1 below).
+- **What drives it:** the lab's check of which sample-sheet column explains each component (Figure QC6) finds that sample type explains PC1 (R² = 0.92). The axis is the biology, not a batch.
+- **The middle sample:** one tumour sits between the groups, the flagged sample above.
+
+| | |
+|---|---|
+| ![PCA](figures/01-pca.png) **Figure 1.** PCA of the 48 samples. | ![PC association](figures/qc-pca-pc_covariate_association.png) **QC6.** Which column explains which component. |
+
+The gene filter (QC3), the size-factor comparison (QC4) and the scree plot (QC5) are in [`figures/`](figures).
 
 ---
 
@@ -222,7 +248,8 @@ lsma-lab-bulk-rnaseq-kidney-cancer-tcga-kirc/
 │   ├── 01-pca              ·  02-sample_correlation  ·  03-volcano
 │   ├── 04-ma               ·  05-de_heatmap          ·  06-top_genes
 │   ├── 07-pvalue_histogram ·  08-gsea_hallmark       ·  09-ora_hallmark
-│   └── 10-gsea_curves
+│   ├── 10-gsea_curves
+│   └── qc-pca-*                     quality control and PCA
 ├── results/                   summary tables (tab-separated)
 │   ├── top100_higher_in_tumour.tsv
 │   ├── top100_lower_in_tumour.tsv
