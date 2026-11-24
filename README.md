@@ -15,6 +15,7 @@ This repository is a worked example from the **LSMA Analysis Lab**, the analysis
 | **Lab run time** | **5 min 31 s** for the whole analysis (plus 50 s to import the data from the GDC) |
 | **Validation** | Independent cohort GSE102101 (10 patient pairs), same lab workflow: **4 min 36 s**. Robustness re-run without one flagged sample: **5 min 1 s** |
 | **Result** | **Replicated**: 98% of the strongly changed genes, and all 34 significant pathways, move the same way in the independent cohort |
+| **Companion** | [The same cancer, cell by cell](https://github.com/MultiOmics-Intelligence/lsma-lab-single-cell-kidney-cancer-ccrcc): single-cell RNA-seq showing which cells carry these genes |
 
 ---
 
