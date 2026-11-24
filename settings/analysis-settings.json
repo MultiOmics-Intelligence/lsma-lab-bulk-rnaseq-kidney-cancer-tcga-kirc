@@ -1,0 +1,121 @@
+{
+  "workflow": "bulk-rnaseq",
+  "workflow_version": "1.2.0",
+  "random_seed": 42,
+  "lab_run_time": "5 min 31 s (import from the GDC: 50 s)",
+  "parameters": {
+    "input": {
+      "strip_ensembl_version": true,
+      "sample_preparation": {
+        "version": 1,
+        "condition": "tissue",
+        "relabel": {},
+        "groups": [
+          "normal",
+          "tumour"
+        ],
+        "reference": "normal",
+        "excluded": {},
+        "covariates": [
+          "patient"
+        ],
+        "pairing": "patient"
+      }
+    },
+    "count_qc": {
+      "filter_method": "filterByExpr",
+      "group_column": null,
+      "min_count": 10,
+      "min_samples": null,
+      "outlier_mad": 3
+    },
+    "normalisation": {
+      "transformation": "vst"
+    },
+    "exploration": {
+      "n_top_genes": 500,
+      "batch_column": null,
+      "distance": "euclidean",
+      "linkage": "complete",
+      "n_heatmap_genes": 50,
+      "color_by": "tissue"
+    },
+    "differential_expression": {
+      "method": "deseq2",
+      "alpha": 0.05,
+      "lfc_threshold": 1,
+      "lfc_shrinkage": "apeglm",
+      "genes_of_interest": [],
+      "p_adjust_method": "BH",
+      "test_lfc_threshold": 0,
+      "independent_filtering": true,
+      "edger_test": "QLF",
+      "voom_quality_weights": false,
+      "subset_to_contrast": false,
+      "covariates": [
+        "patient"
+      ],
+      "test_level": "tumour",
+      "reference_level": "normal",
+      "group_column": "tissue"
+    },
+    "enrichment": {
+      "enabled": true,
+      "collections": [
+        "hallmark",
+        "go_bp",
+        "kegg",
+        "reactome"
+      ],
+      "run_ora": true,
+      "run_gsea": true,
+      "padj_cutoff": null,
+      "lfc_cutoff": null,
+      "ranking_metric": "statistic",
+      "min_set_size": 10,
+      "max_set_size": 500,
+      "p_adjust_method": "BH"
+    }
+  },
+  "software_versions": {
+    "input": {
+      "R": "4.5.2",
+      "jsonlite": "2.0.0",
+      "AnnotationDbi": "1.70.0",
+      "Bioconductor": "3.21"
+    },
+    "count_qc": {
+      "R": "4.5.2",
+      "edgeR": "4.6.3",
+      "limma": "3.64.3",
+      "Bioconductor": "3.21"
+    },
+    "normalisation": {
+      "R": "4.5.2",
+      "DESeq2": "1.48.2",
+      "edgeR": "4.6.3",
+      "limma": "3.64.3",
+      "Bioconductor": "3.21"
+    },
+    "exploration": {
+      "R": "4.5.2",
+      "limma": "3.64.3",
+      "Bioconductor": "3.21"
+    },
+    "differential_expression": {
+      "R": "4.5.2",
+      "DESeq2": "1.48.2",
+      "apeglm": "1.30.0",
+      "limma": "3.64.3",
+      "edgeR": "4.6.3",
+      "Bioconductor": "3.21"
+    },
+    "enrichment": {
+      "R": "4.5.2",
+      "clusterProfiler": "4.16.0",
+      "fgsea": "1.34.2",
+      "msigdbr": "26.1.1",
+      "Bioconductor": "3.21"
+    }
+  }
+}
