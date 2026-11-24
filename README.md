@@ -73,6 +73,27 @@ Columns: Ensembl ID, gene symbol, mean normalised expression, log2 fold change (
 
 ---
 
+## Workflow
+
+```mermaid
+flowchart LR
+    A["TCGA-KIRC<br/>NCI GDC<br/>48 samples, 24 patients"] --> B["Sample preparation<br/>tumour vs normal<br/>paired by patient"]
+    B --> C["Quality control<br/>filterByExpr<br/>60,660 → 20,829 genes"]
+    C --> D["Normalisation<br/>DESeq2 size factors<br/>VST"]
+    D --> E["Exploration<br/>PCA, distances,<br/>clustering"]
+    D --> F["Differential expression<br/>DESeq2 ~ patient + tissue<br/>apeglm shrinkage"]
+    F --> G["Pathway analysis<br/>ORA + GSEA<br/>Hallmark, GO, KEGG, Reactome"]
+    E --> H["Report, figures,<br/>tables"]
+    F --> H
+    G --> H
+    classDef data fill:#F6F2EA,stroke:#B83A16,color:#0F1B33
+    classDef step fill:#0F1B33,stroke:#0F1B33,color:#F4F4F2
+    classDef out fill:#FBEAE3,stroke:#D9481F,color:#0F1B33
+    class A data
+    class B,C,D,E,F,G step
+    class H out
+```
+
 ## How it was done
 
 Every step below is a stage in the LSMA Analysis Lab, run with the settings in [`settings/analysis-settings.json`](settings/analysis-settings.json) (random seed 42).
