@@ -189,6 +189,78 @@ Every step below is a stage in the LSMA Analysis Lab, run with the settings in [
 
 **Software:** R 4.5.2 and Bioconductor 3.21, with DESeq2 1.48.2, apeglm 1.30.0, edgeR 4.6.3, limma 3.64.3, clusterProfiler 4.16.0, fgsea 1.34.2 and msigdbr 26.1.1.
 
+## The mathematics behind the methods
+
+The standard forms of the methods used above, as the lab's code applies them. Gene $i$, sample $j$.
+
+**DESeq2 size factors (median of ratios).**
+
+$$
+s_j = \operatorname{median}_{i} \frac{K_{ij}}{\left( \prod_{v=1}^{n} K_{iv} \right)^{1/n}}
+$$
+
+$K_{ij}$ is the raw count of gene $i$ in sample $j$, and $n$ is the number of samples. The denominator is the gene's geometric mean over all samples, a pseudo-reference sample; genes with a zero in any sample are skipped. The size factor is the median ratio to that reference, so a minority of strongly changed genes cannot move it.
+
+**Negative binomial model with the paired design (`~ patient + tissue`).**
+
+$$
+K_{ij} \sim \operatorname{NB}(\mu_{ij}, \alpha_i), \qquad \mu_{ij} = s_j q_{ij}, \qquad \operatorname{Var}(K_{ij}) = \mu_{ij} + \alpha_i \mu_{ij}^2
+$$
+
+$$
+\log_2 q_{ij} = \beta_{i0} + \gamma_{i,p(j)} + \beta_{i1} x_j
+$$
+
+$x_j$ is 1 for a tumour and 0 for normal kidney, and $\gamma_{i,p(j)}$ is the effect of the patient $p(j)$ the sample came from. So $\beta_{i1}$ is the log2 fold change of tumour over normal within the same patient. The dispersion $\alpha_i$ is estimated for each gene and shrunk towards a trend over mean expression.
+
+**Wald test.**
+
+$$
+W_i = \frac{\hat\beta_{i1}}{\operatorname{SE}(\hat\beta_{i1})}
+$$
+
+The maximum-likelihood fold change divided by its standard error, compared with a standard normal distribution for a two-sided p-value. $W_i$ is also the score used to rank genes for GSEA.
+
+**apeglm shrinkage of fold changes.**
+
+$$
+\hat\beta_{i1}^{\text{shrunk}} = \arg\max_{\beta} \left[ \log L_i(\beta) + \log \pi(\beta) \right], \qquad \pi = \operatorname{Cauchy}(0, S)
+$$
+
+$L_i$ is the gene's negative binomial likelihood and $\pi$ a heavy-tailed prior centred at zero, with its scale $S$ estimated from all genes. Noisy fold changes of weak genes are pulled towards zero; well-measured large changes are hardly moved. The shrunken values are the reported fold changes and set the |log2 fold change| > 1 lists; the p-values still come from the Wald test.
+
+**Benjamini–Hochberg adjustment, after independent filtering.**
+
+$$
+p^{\text{adj}}_{(k)} = \min_{l \ge k}   \min\left( 1, \frac{m   p_{(l)}}{l} \right)
+$$
+
+$p_{(1)} \le \dots \le p_{(m)}$ are the sorted p-values of the $m$ genes tested. DESeq2 first sets aside genes with a low mean count, choosing the cut-off that gives the most discoveries at 0.05; they get no adjusted p-value. Calling genes at padj < 0.05 keeps the expected share of false discoveries at 5%.
+
+**Over-representation analysis (hypergeometric test).**
+
+$$
+P(X \ge k) = \sum_{x=k}^{\min(n, M)} \frac{\binom{M}{x} \binom{N-M}{n-x}}{\binom{N}{n}}
+$$
+
+$N$ is the number of background genes (all tested genes) found in the collection, $M$ of them belong to the gene set, $n$ is the number of genes in the list, and $k$ the number in both. Genes higher and lower in the tumour (padj < 0.05, |log2 fold change| ≥ 1) are tested as separate lists, with Benjamini–Hochberg across the sets of each collection.
+
+**Gene set enrichment analysis (fgsea).**
+
+$$
+P_{\text{hit}}(k) = \sum_{g_j \in S,\ j \le k} \frac{\lvert r_j \rvert}{N_R}, \qquad P_{\text{miss}}(k) = \sum_{g_j \notin S,\ j \le k} \frac{1}{N - N_S}, \qquad N_R = \sum_{g_j \in S} \lvert r_j \rvert
+$$
+
+All $N$ tested genes are sorted by the Wald statistic $r_j$, and $S$ is a gene set of $N_S$ genes. Walking down the list, the enrichment score ES is the value of $P_{\text{hit}}(k) - P_{\text{miss}}(k)$ furthest from zero. The normalised score NES divides ES by the mean score of random gene sets of the same size and the same sign, so sets of different sizes can be compared. p-values come from fgsea's multilevel permutation method, with Benjamini–Hochberg across the sets.
+
+**Agreement between cohorts (validation).**
+
+$$
+\rho = \operatorname{corr}\left( \operatorname{rank}(x), \operatorname{rank}(y) \right), \qquad P(X \ge k) = \sum_{x=k}^{n} \binom{n}{x} \left( \tfrac{1}{2} \right)^{n}
+$$
+
+Spearman's $\rho$ is the correlation of the ranks of the fold changes in the two cohorts. The one-sided binomial test asks how likely it is that $k$ or more of $n$ genes change in the same direction if each direction were a coin toss.
+
 ## Validation
 
 A result from one cohort shows the analysis is sound, not that the findings hold elsewhere. So it was checked twice, both times in the LSMA Analysis Lab with the same workflow and settings.
