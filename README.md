@@ -196,7 +196,7 @@ The standard forms of the methods used above, as the lab's code applies them. Ge
 **DESeq2 size factors (median of ratios).**
 
 $$
-s_j = \operatorname{median}_{i} \frac{K_{ij}}{\left( \prod_{v=1}^{n} K_{iv} \right)^{1/n}}
+s_j = \mathrm{median}_{i} \frac{K_{ij}}{\left( \prod_{v=1}^{n} K_{iv} \right)^{1/n}}
 $$
 
 $K_{ij}$ is the raw count of gene $i$ in sample $j$, and $n$ is the number of samples. The denominator is the gene's geometric mean over all samples, a pseudo-reference sample; genes with a zero in any sample are skipped. The size factor is the median ratio to that reference, so a minority of strongly changed genes cannot move it.
@@ -204,7 +204,7 @@ $K_{ij}$ is the raw count of gene $i$ in sample $j$, and $n$ is the number of sa
 **Negative binomial model with the paired design (`~ patient + tissue`).**
 
 $$
-K_{ij} \sim \operatorname{NB}(\mu_{ij}, \alpha_i), \qquad \mu_{ij} = s_j q_{ij}, \qquad \operatorname{Var}(K_{ij}) = \mu_{ij} + \alpha_i \mu_{ij}^2
+K_{ij} \sim \mathrm{NB}(\mu_{ij}, \alpha_i), \qquad \mu_{ij} = s_j q_{ij}, \qquad \mathrm{Var}(K_{ij}) = \mu_{ij} + \alpha_i \mu_{ij}^2
 $$
 
 $$
@@ -216,7 +216,7 @@ $x_j$ is 1 for a tumour and 0 for normal kidney, and $\gamma_{i,p(j)}$ is the ef
 **Wald test.**
 
 $$
-W_i = \frac{\hat\beta_{i1}}{\operatorname{SE}(\hat\beta_{i1})}
+W_i = \frac{\hat\beta_{i1}}{\mathrm{SE}(\hat\beta_{i1})}
 $$
 
 The maximum-likelihood fold change divided by its standard error, compared with a standard normal distribution for a two-sided p-value. $W_i$ is also the score used to rank genes for GSEA.
@@ -224,7 +224,7 @@ The maximum-likelihood fold change divided by its standard error, compared with 
 **apeglm shrinkage of fold changes.**
 
 $$
-\hat\beta_{i1}^{\text{shrunk}} = \arg\max_{\beta} \left[ \log L_i(\beta) + \log \pi(\beta) \right], \qquad \pi = \operatorname{Cauchy}(0, S)
+\hat\beta_{i1}^{\text{shrunk}} = \arg\max_{\beta} \left[ \log L_i(\beta) + \log \pi(\beta) \right], \qquad \pi = \mathrm{Cauchy}(0, S)
 $$
 
 $L_i$ is the gene's negative binomial likelihood and $\pi$ a heavy-tailed prior centred at zero, with its scale $S$ estimated from all genes. Noisy fold changes of weak genes are pulled towards zero; well-measured large changes are hardly moved. The shrunken values are the reported fold changes and set the |log2 fold change| > 1 lists; the p-values still come from the Wald test.
@@ -256,7 +256,7 @@ All $N$ tested genes are sorted by the Wald statistic $r_j$, and $S$ is a gene s
 **Agreement between cohorts (validation).**
 
 $$
-\rho = \operatorname{corr}\left( \operatorname{rank}(x), \operatorname{rank}(y) \right), \qquad P(X \ge k) = \sum_{x=k}^{n} \binom{n}{x} \left( \tfrac{1}{2} \right)^{n}
+\rho = \mathrm{corr}\left( \mathrm{rank}(x), \mathrm{rank}(y) \right), \qquad P(X \ge k) = \sum_{x=k}^{n} \binom{n}{x} \left( \tfrac{1}{2} \right)^{n}
 $$
 
 Spearman's $\rho$ is the correlation of the ranks of the fold changes in the two cohorts. The one-sided binomial test asks how likely it is that $k$ or more of $n$ genes change in the same direction if each direction were a coin toss.
